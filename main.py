@@ -19,22 +19,20 @@ def save_keys():
         for key in keys:
             f.write(key + "\n")
 
-# Generate key (optional; remove if you don't want dynamic generation)
-@app.route('/generate', methods=['POST'])
+# Generate key (optional)
+@app.route('/generate', methods=['GET'])
 def generate_key():
-    data = request.json
-    key = data.get('key')
+    key = request.args.get('key')
     if not key:
         return jsonify({"error": "No key provided"}), 400
     keys.add(key)
     save_keys()
     return jsonify({"message": "Key generated", "key": key}), 200
 
-# Validate key
-@app.route('/validate', methods=['POST'])
+# Validate key using URL
+@app.route('/validate', methods=['GET'])
 def validate_key():
-    data = request.json
-    key = data.get('key')
+    key = request.args.get('key')
     if key in keys:
         return jsonify({"valid": True}), 200
     return jsonify({"valid": False}), 403
